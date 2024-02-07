@@ -40,17 +40,6 @@ const fetchPlaces = async () => {
 onMounted(async () => {
   await fetchPlaces()
 })
-onMounted(() => {
-  try {
-    // Попытка автоматически воспроизвести музыку при загрузке
-    audioPlayer.value.play().catch((e) => {
-      console.error('Автовоспроизведение не удалось', e)
-      // Здесь можно добавить логику для взаимодействия с пользователем, например кнопку для воспроизведения музыки
-    })
-  } catch (e) {
-    console.error('Ошибка воспроизведения', e)
-  }
-})
 
 watch(places, async () => {
   if (places.value.length == 0) {
@@ -64,10 +53,6 @@ watch(places, async () => {
 
 <template>
   <div class="flex h-dvh w-dvw items-center justify-center">
-    <audio ref="audioPlayer" loop>
-      <source src="/slavik.mp3" type="audio/mp3" />
-      Ваш браузер не поддерживает аудио элемент.
-    </audio>
     <Loading v-if="loading" />
     <Game
       v-else
