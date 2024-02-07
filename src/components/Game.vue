@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 
 const props = defineProps({
   title: String,
@@ -8,16 +8,22 @@ const props = defineProps({
   loading: Boolean
 })
 
-console.log(props.loading)
 const emit = defineEmits(['fetchPlaces'])
-
 const year = ref(1800)
+
+let failAudio
+
+onMounted(() => {
+  failAudio = new Audio('/slavik.mp3')
+})
 
 const btnClickYear = () => {
   if (Number(year.value) === Number(props.yearPlace)) {
     alert('Ты угадал с датой')
+    failAudio.play()
   } else {
     alert(`Ты не угадал, ты лох, это ${props.yearPlace} год`)
+    failAudio.play()
   }
 }
 </script>
