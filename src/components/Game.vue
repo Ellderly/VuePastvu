@@ -19,11 +19,11 @@ onMounted(() => {
 
 const btnClickYear = () => {
   if (Number(year.value) === Number(props.yearPlace)) {
+    failAudio.play()
     alert('Ты угадал с датой')
-    failAudio.play()
   } else {
-    alert(`Ты не угадал, ты лох, это ${props.yearPlace} год`)
     failAudio.play()
+    alert(`Ты не угадал, ты лох, это ${props.yearPlace} год`)
   }
 }
 </script>
