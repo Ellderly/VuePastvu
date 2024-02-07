@@ -20,6 +20,8 @@ const generateRandomCoordinates = () => {
 const fetchPlaces = async () => {
   const { latitude, longitude } = generateRandomCoordinates() // Генерация новых координат перед запросом
   try {
+    if (loading.value === false) loading.value = true
+
     const { data } = await axios.get(
       `https://pastvu.com/api2?method=photo.giveNearestPhotos&params={"geo":[${latitude},${longitude}],"limit":1}`
     )
