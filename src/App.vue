@@ -1,0 +1,71 @@
+<script setup>
+import { ref, onMounted, watch } from 'vue'
+import Game from './components/Game.vue'
+import Loading from './components/Loading.vue'
+import axios from 'axios'
+
+const places = ref([])
+const id = ref(0)
+const loading = ref(true)
+
+const generateRandomCoordinates = () => {
+  const latitude = (Math.random() * 180 - 90).toFixed(5)
+
+  console.log(latitude)
+  const longitude = (Math.random() * 360 - 180).toFixed(5)
+  console.log(longitude)
+  return { latitude, longitude }
+}
+
+const fetchPlaces = async () => {
+  const { latitude, longitude } = generateRandomCoordinates() // Генерация новых координат перед запросом
+  try {
+    const { data } = await axios.get(
+      `https://pastvu.com/api2?method=photo.giveNearestPhotos&params={"geo":[${latitude},${longitude}],"limit":1}`
+    )
+
+    places.value = data.result.photos.map((obj) => ({
+      ...obj,
+      id: id.value++
+    }))
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+onMounted(async () => {
+  await fetchPlaces()
+})
+
+watch(places, async () => {
+  if (places.value.length == 0) {
+    await fetchPlaces()
+  } else {
+    loading.value = false
+  }
+  // console.log(places.value.length)
+})
+</script>
+
+<template>
+  <div class="flex h-dvh w-dvw items-center justify-center">
+    <!-- <button type="button" class="btn">Начать</button> -->
+    <Loading v-if="loading" />
+    <Game
+      v-else
+      v-for="place in places"
+      :key="place.cid"
+      :title="place.title"
+      :image="place.file"
+      :year-place="place.year"
+      @fetchPlaces="fetchPlaces"
+      :loading="loading"
+    />
+  </div>
+</template>
+
+<style>
+.btn {
+  @apply text-2xl rounded-md bg-yellow-400 px-16 py-4 transition hover:bg-blue-500 hover:text-gray-50;
+}
+</style>
